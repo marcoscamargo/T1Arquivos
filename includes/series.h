@@ -19,4 +19,8 @@ Serie *get_serie(const Data *);
 /* Imprime os dados de uma série. */
 void print_serie(const Serie *);
 
+Serie **read_generated_series(int);
+
+void free_generated_series(Serie **, int);
+
 #endif

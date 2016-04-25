@@ -12,3 +12,5 @@ run:
 	./main $(in)
 fullrun:
 	valgrind -v --track-origins=yes --leak-check=full ./main $(in)
+zip:
+	zip -r 9293394.zip *

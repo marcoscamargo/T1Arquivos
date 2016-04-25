@@ -11,6 +11,6 @@
 typedef unsigned char bool;
 
 /* Lê uma linha e transforma em uma string */
-char *read_line(FILE *);
+char *read_line(FILE *, char);
 
 #endif

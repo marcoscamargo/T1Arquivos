@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "utils.h"
 #include "series.h"
 #include "filemanip.h"
@@ -27,11 +28,14 @@ int main(int argc, char *argv[]){
 	int op = 1;
 	FILE *fp;
 	Serie *s;
+	Serie **gen;
 	Data *d;
 	int i, n;
 
+	srand(time(NULL));
+
 	printf("Nome do arquivo: ");
-	filename = read_line(stdin);
+	filename = read_line(stdin, '\n');
 
 	fp = open_file(filename);
 
@@ -44,7 +48,16 @@ int main(int argc, char *argv[]){
 
 		switch (op){
 			case 1:
+				n = 100;
 
+				gen = read_generated_series(n);
+				
+				for (i = 0; i < n; i++){
+					print_serie(gen[i]);
+					printf("\n");
+				}
+
+				free_generated_series(gen, n);
 				break;
 			case 2:
 				s = read_serie();
@@ -60,9 +73,8 @@ int main(int argc, char *argv[]){
 				// Uma por vez?
 				// ("Aperte enter para ir para á próxima série.").
 				fseek(fp, 0, SEEK_SET);
-				fread(&n, sizeof(int), 1, fp);
 
-				for (i = 0; i < n; i++){
+				while (!feof(fp)){
 					d = retrieve_data(fp, i);
 					s = get_serie(d);
 					print_serie(s);

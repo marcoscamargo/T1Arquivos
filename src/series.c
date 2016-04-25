@@ -22,16 +22,16 @@ Serie *read_serie(){
 	scanf("%u%*c", &(s->id));
 
 	printf("Nome: ");
-	s->title = read_line(stdin);
+	s->title = read_line(stdin, '\n');
 
 	printf("Descricao: ");
-	s->description = read_line(stdin);
+	s->description = read_line(stdin, '\n');
 
 	printf("Genero: ");
-	s->genre = read_line(stdin);
+	s->genre = read_line(stdin, '\n');
 
 	printf("Producao: ");
-	s->production = read_line(stdin);
+	s->production = read_line(stdin, '\n');
 
 	printf("Ano de lancamento: ");
 	scanf("%u%*c", &(s->year));
@@ -40,6 +40,77 @@ Serie *read_serie(){
 	scanf("%u%*c", &(s->season));
 
 	return s;
+}
+
+int rand_compare(const void *a, const void *b){
+	return (rand() % 3) - 1;
+}
+
+Serie **read_generated_series(int n){
+	Serie **s = (Serie **)malloc(n * sizeof(Serie *));
+	bool flag;
+	int i, j;
+
+	FILE *fp = fopen("series.dat", "r");
+
+	for (i = 0; i < n; i++){
+		s[i] = (Serie *)malloc(sizeof(Serie));
+
+		fscanf(fp, "title=\"");
+		s[i]->title = read_line(fp, '\"');
+		fscanf(fp, "%*c");
+		
+		fscanf(fp, "description=\"");
+		s[i]->description = read_line(fp, '\"');
+		fscanf(fp, "%*c");
+
+		fscanf(fp, "year=\"");
+		fscanf(fp, "%d", &(s[i]->year));
+		fscanf(fp, "%*c%*c");
+
+		fscanf(fp, "season=\"");
+		fscanf(fp, "%d", &(s[i]->season));
+		fscanf(fp, "%*c%*c");
+
+		fscanf(fp, "genre=\"");
+		s[i]->genre = read_line(fp, '\"');
+		fscanf(fp, "%*c");
+
+		fscanf(fp, "production=\"");
+		s[i]->production = read_line(fp, '\"');
+		fscanf(fp, "%*c%*c");
+
+		flag = true;
+
+		while (flag){
+			s[i]->id = (rand() % (10000 - 1000)) + 1000;
+
+			flag = false;
+
+			for (j = i - 1; j >= 0; j--){
+				if (s[j]->id == s[i]->id){
+					flag = true;
+					break;
+				}
+			}
+		}
+	}
+
+	qsort(s, n, sizeof(Serie *), rand_compare);
+
+	fclose(fp);
+
+	return s;
+}
+
+void free_generated_series(Serie **s, int n){
+	int i;
+
+	for (i = 0; i < n; i++){
+		erase_serie(s[i]);
+	}
+
+	free(s);
 }
 
 void erase_serie(Serie *s){

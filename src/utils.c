@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "utils.h"
 
-char *read_line(FILE *fp){
+char *read_line(FILE *fp, char terminator){
     char *stretch = NULL;
     int i = 0;
 
@@ -10,7 +10,7 @@ char *read_line(FILE *fp){
         stretch = (char *)realloc(stretch, (i + 1) * sizeof(char));
         fscanf(fp, "%c", stretch + i);
         i++;
-    }while (!feof(fp) && stretch[i - 1] != '\n');
+    }while (!feof(fp) && stretch[i - 1] != terminator);
     // Lendo até o final do arquivo ou até um '\n'
 
     stretch[i - 1] = '\0';

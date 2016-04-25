@@ -42,10 +42,6 @@ Serie *read_serie(){
 	return s;
 }
 
-int rand_compare(const void *a, const void *b){
-	return (rand() % 3) - 1;
-}
-
 Serie **read_generated_series(int n){
 	Serie **s = (Serie **)malloc(n * sizeof(Serie *));
 	bool flag;
@@ -96,7 +92,7 @@ Serie **read_generated_series(int n){
 		}
 	}
 
-	qsort(s, n, sizeof(Serie *), rand_compare);
+	randomize_vector(s, sizeof(Serie *), n);
 
 	fclose(fp);
 

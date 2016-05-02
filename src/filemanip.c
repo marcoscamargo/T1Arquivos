@@ -1,43 +1,38 @@
+/*	Gabriel Pinto de Camargo - 9293456
+	Gabriel Simmel Nascimento - 9050232
+	Marcos Cesar Ribeiro de Camargo - 9278045
+	Victor Luiz Roquete Forbes - 9293394 	*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "utils.h"
+#include "series.h"
 #include "filemanip.h"
 
-Data *create_data(){
-	return malloc(sizeof(Data));
-}
-
-void insert(FILE *fp, const Data *d){
+void insert(FILE *fp, const void *data, unsigned int size){
+	// Indo para o final do arquivo.
 	fseek(fp, 0, SEEK_END);
 
-	// Indicador de tamanho.
-	fwrite(&(d->size), sizeof(int), 1, fp);
-
-	// Registro.
-	fwrite(d->data, d->size, 1, fp);
-
-	// Update .idx
+	// Escrevendo os dados no arquivo.
+	fwrite(data, size, 1, fp);
 }
 
-Data *retrieve_data(FILE *fp, int x){
-	Data *d = create_data();
-	int i, size;
+void *retrieve_data(FILE *fp){
+	void *data = malloc(NUMERO_DE_CAMPOS_INTEIROS * sizeof(unsigned int));
+	int offset, i;
 
-	fseek(fp, sizeof(unsigned int), SEEK_SET); // Pulando o header
+	// Lendo os 3 inteiros.
+	fread(data, sizeof(unsigned int), NUMERO_DE_CAMPOS_INTEIROS, fp);
+	offset = NUMERO_DE_CAMPOS_INTEIROS * sizeof(unsigned int);
 
-	for (i = 0; i < x; i++){
-		fread(&size, sizeof(unsigned int), 1, fp); // Lendo o tamanho do registro
-		fseek(fp, size, SEEK_CUR); // Pulando o registro
+	// Lendo as 4 strings.
+	for (i = 0; i < NUMERO_DE_CAMPOS_STRINGS; i++){
+		do{
+			data = realloc(data, (offset + sizeof(char)));
+			fread(data + offset, sizeof(char), 1, fp);
+			offset += sizeof(char);
+		}while (*((char *)(data + offset - sizeof(char))));
 	}
 
-	fread(&size, sizeof(unsigned int), 1, fp); // Lendo o tamanho do registro
-	fread(d->data, size, 1, fp);
-	d->size = size;
-
-	return d;
-}
-
-void erase_data(Data *d){
-	free(d->data);
-	free(d);
+	return data;
 }

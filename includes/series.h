@@ -1,7 +1,17 @@
+/*	Gabriel Pinto de Camargo - 9293456
+	Gabriel Simmel Nascimento - 9050232
+	Marcos Cesar Ribeiro de Camargo - 9278045
+	Victor Luiz Roquete Forbes - 9293394 	*/
+
 #ifndef SERIES_H
 #define SERIES_H
 
-#include "filemanip.h"
+// Número (fixo) de campos presentes no registro.
+#define NUMERO_DE_CAMPOS_INTEIROS 3
+#define NUMERO_DE_CAMPOS_STRINGS 4
+	
+#define MAX_ID 999999999
+#define MIN_ID 0
 
 typedef struct Serie Serie;
 
@@ -12,15 +22,27 @@ Serie *read_serie();
 void erase_serie(Serie *);
 
 /* Concatena os dados de uma Série. */
-Data *get_data(const Serie *);
+void *get_data(const Serie *);
 
-Serie *get_serie(const Data *);
+/* Desconcatena os dados de uma Série. */
+Serie *get_serie(const void *);
+
+/* Retorna o tamanho total (em bytes) dos dados de uma Serie. */
+unsigned int get_size(const Serie *);
+
+/* Retorna o id de uma Serie. */
+unsigned int get_id(const Serie *);
+
+/* Seta um id novo para uma série. */
+void set_id(Serie *, unsigned int);
 
 /* Imprime os dados de uma série. */
 void print_serie(const Serie *);
 
-Serie **read_generated_series(int);
+/* Lê os dados de n séries contidas no arquivo "series.dat". */
+Serie **read_generated_series(const char *, FILE *, int);
 
-void free_generated_series(Serie **, int);
+/* Apaga os dados das n séries lidas. */
+void erase_generated_series(Serie **, int);
 
 #endif

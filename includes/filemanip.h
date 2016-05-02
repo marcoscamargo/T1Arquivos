@@ -1,23 +1,15 @@
+/*	Gabriel Pinto de Camargo - 9293456
+	Gabriel Simmel Nascimento - 9050232
+	Marcos Cesar Ribeiro de Camargo - 9278045
+	Victor Luiz Roquete Forbes - 9293394 	*/
+
 #ifndef FILE_MANIP_H
 #define FILE_MANIP_H
 
-typedef struct Data Data;
+/* Insere um registro no final do arquivo. */
+void insert(FILE *, const void *, unsigned int);
 
-struct Data{
-	void *data;
-	int size;
-};
-
-
-/* Aloca memória para armazenar Data. */
-Data *create_data();
-
-/* Insere um registro (com seu indicador de tamanho) em um arquivo. */
-void insert(FILE *, const Data *);
-
-Data *retrieve_data(FILE *, int);
-
-/* Libera memória de Data. */
-void erase_data(Data *);
+/* Recupera o registro na posição atual do arquivo. */
+void *retrieve_data(FILE *);
 
 #endif
